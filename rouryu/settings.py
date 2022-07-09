@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'trip_maker',
     'channels',
     'samplechat',
     'django.contrib.admin',

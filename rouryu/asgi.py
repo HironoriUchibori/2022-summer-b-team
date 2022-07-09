@@ -19,7 +19,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'rouryu.settings')
 # is populated before importing code that may import ORM models.
 django_asgi_app = get_asgi_application()
 
-import samplechat.routing
+import trip_maker.routing
 
 application = ProtocolTypeRouter({
     "http": django_asgi_app,
@@ -27,7 +27,7 @@ application = ProtocolTypeRouter({
     "websocket": AllowedHostsOriginValidator(
         AuthMiddlewareStack(
             URLRouter(
-                samplechat.routing.websocket_urlpatterns
+                trip_maker.routing.websocket_urlpatterns
             )
         )
     ),
