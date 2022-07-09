@@ -1,11 +1,12 @@
 import requests
 import json
 import pprint
+import time
+import datetime
 
 
 def main():
-    #decision_scope(35.692429, 139.699572)
-    google_func2()
+    google_func2(36.1091117, 140.101429)
     # google_func("千葉県")
 
 
@@ -53,61 +54,136 @@ def google_func(place_name):
         top_ten_name.append(name[rating_index])
 
 
-def google_func2():
-    url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522%2C151.1957362&radius=1500&type=restaurant&keyword=cruise&key=AIzaSyA5SmbNJlpGTV_v6aAtKS-caYI8OpNFQGg"
+def google_func2(lat, lon):
+    url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyA5SmbNJlpGTV_v6aAtKS-caYI8OpNFQGg&location=' + str(
+        lat) + ',' + str(lon) + '&radius=30000&language=ja&keyword=観光'
     payload = {}
     headers = {}
-    
     response = requests.request("GET", url, headers=headers, data=payload)
-    print(response.text)
+    places = json.loads(response.text)
+    #print(places)
+    # pprint.pprint(places)
+    rating = []
+    location = []
+    name = []
+    for place in places["results"]:
+        if place.get("rating") != None:
+            location.append(place["geometry"]["location"])
+            rating.append(place["rating"])
+            name.append(place["name"])
+    for i in range(2):
+        time.sleep(1)
+        if places.get("next_page_token") != None:
+            url1 = url + '&pagetoken=' + places["next_page_token"]
+            response = requests.request("GET",
+                                        url1,
+                                        headers=headers,
+                                        data=payload)
+            places = json.loads(response.text)
+            for place in places["results"]:
+                if place.get("rating") != None:
+                    location.append(place["geometry"]["location"])
+                    rating.append(place["rating"])
+                    name.append(place["name"])
+            # pprint.pprint(places)
+            url1 = None
+            #print(places["next_page_token"])
+    # print(location)
+    # print(rating)
+    # print(name)
+    population_func(location, rating, name)
 
 
 # 有名なところの経度緯度取得
 # その取得した緯度経度を基準としたある範囲を指定
-def decision_scope(lat, lon):
-    # 250m = 0.0025°
-    one_km = 0.01
-    # lat:緯度
-    # lon:経度
-    start_lat = lat + 1 * one_km
-    end_lat = lat - 1 * one_km
-    start_lon = lon - 1 * one_km
-    end_lon = lon + 1 * one_km
+def population_func(locations, rating, name):
+    populations = []
+    t_delta = datetime.timedelta(hours=9)
+    JST = datetime.timezone(t_delta, 'JST')
+    now = datetime.datetime.now(JST)
+    past_delta = datetime.timedelta(weeks=1)
+    past = now - past_delta
+    # YYYYMMDDhhmmss形式に書式化
+    now = now.strftime('%Y%m%d%H%M')
+    past = past.strftime('%Y%m%d%H%M')
+    # 受け取った緯度経度から人口を算出->スコア化
+    average_population = []
+    for location in locations:
+        lat = location["lat"]
+        lng = location["lng"]
+        url = 'https://l955buebw3.execute-api.ap-northeast-1.amazonaws.com/vital-statistics/latlng'
 
-    # その範囲内での滞在人数を取得
+        Headers = {
+            "content-type": "application/json",
+            "x-api-key": "mMKbSQgA3rRqwuzlE3aG5MNzUg0K1ak29FnaGJuf"
+        }
+        place = {
+            "startLat": lat,
+            "startLng": lng,
+            "meshSize": 5,
+            "timeUnit": 15,
+            "startTime": str(past),  # あとで調整
+            "endTime": str(now)
+        }
+        res = requests.post(url, headers=Headers, json=place)
+        data = json.loads(res.text)
+        # print(data)
+        # pprint.pprint(
+        #     data['body']['results'][0]['populationList'][0]["population"])
+        for population_lists in data['body']['results']:
+            population_array = []
+            for population_list in population_lists["populationList"]:
+                pop_num = population_list["population"]
+                population_array.append(pop_num)
+            pop_mean = sum(population_array) / len(population_array)
+            # print(pop_mean)
+            average_population.append(pop_mean)
+    average = sum(average_population) / len(average_population)
+    population_score = []
+    for average_score in average_population:
+        score = float(average / average_score)
+        population_score.append(score)
 
-    url = 'https://l955buebw3.execute-api.ap-northeast-1.amazonaws.com/vital-statistics/latlng'
+    #population_scoreとrating_scoreを足し合わせる
+    total_score = []
+    rating_max = max(rating)
+    population_max = max(population_score)
+    for i in range(len(population_score)):
+        rating_score = (rating[i]) / (rating_max)
+        pop_score = (population_score[i]) / (population_max)
+        score = pop_score + rating_score
+        total_score.append(score)
+    # print(f'total_score = {total_score}')
 
-    Headers = {
-        "content-type": "application/json",
-        "x-api-key": "mMKbSQgA3rRqwuzlE3aG5MNzUg0K1ak29FnaGJuf"
-    }
+    # スコアの上位15個くらいの場所名を求める
+    array = total_score
+    top_n_location_lat = []
+    top_n_location_lon = []
+    top_n_name = []
 
-    place = {
-        "startLat": start_lat,
-        "startLng": start_lon,
-        "endLat": end_lat,
-        "endLng": end_lon,
-        "meshSize": 5,
-        "timeUnit": 15,
-        "startTime": "202103010900",  # あとで調整
-        "endTime": "202103011000"
-    }
-
-    res = requests.post(url, headers=Headers, json=place)
-
-    data = json.loads(res.text)
-    pprint.pprint(data)
-    # print(data['meshCode'])
-    # for k in data:
-    #   print(k)
-    print(data['body']['results'][0])
+    array = sorted(array, reverse=True)
+    for i in range(15):  #上位何個取得するか
+        num = array[i]
+        total_score_index = total_score.index(num)
+        top_n_location_lat.append(locations[total_score_index]['lat'])
+        top_n_location_lon.append(locations[total_score_index]['lng'])
+        top_n_name.append(name[total_score_index])
+    print(top_n_name)
 
     # 人数の少ないところをピックアップ
     # Google place api からもらった評価の情報と合わせてフィルタリング
 
     # フィルタリングして合致したメッシュコードから緯度経度取得
     # 緯度経度情報から場所特定
+
+    # # 250m = 0.0025°
+    # one_km = 0.01
+    # # lat:緯度
+    # # lon:経度
+    # start_lat = lat + 1 * one_km
+    # end_lat = lat - 1 * one_km
+    # start_lon = lon - 1 * one_km
+    # end_lon = lon + 1 * one_km
 
 
 if __name__ == "__main__":
