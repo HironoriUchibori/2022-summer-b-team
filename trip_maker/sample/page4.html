@@ -39,20 +39,17 @@
                 <img src="https://placehold.jp/150x150.png" class="card-img-top" alt="..." width="150" height="150">
                 <div class="card-body">
                   <h5 class="card-title">Spot Name</h5>
-                  <a href="#" class="btn btn-primary">GoogleMap</a>
+                  <a href="#" class="btn btn-primary">詳細</a>
                 </div>
             </div>
             <div class="card" style="width: 12rem;">
                 <img src="https://placehold.jp/150x150.png" class="card-img-top" alt="..." width="150" height="150">
                 <div class="card-body">
                   <h5 class="card-title">Spot Name</h5>
-                  <a href="#" class="btn btn-primary">GoogleMap</a>
+                  <a href="#" class="btn btn-primary">詳細</a>
                 </div>
             </div>
         </section>
-        <div class="googlemap">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3240.88852697053!2d139.8059981!3d35.6797467!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6018891bfc592aad%3A0xd222029e041bd31b!2z44CSMTM1LTAwMjIg5p2x5Lqs6YO95rGf5p2x5Yy65LiJ5aW977yU5LiB55uu77yR4oiS77yRIOadseS6rOmDveePvuS7o-e-juihk-mkqA!5e0!3m2!1sja!2sjp!4v1621326065459!5m2!1sja!2sjp" width="800" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-        </div>
         <div class="next_button">
             <div class="d-grid gap-2 col-3 mx-auto">
                 <button type="button" class="btn btn-primary">
@@ -60,6 +57,30 @@
                 </button>
             </div>
         </div>
+        <!-- <div class="googlemap">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3240.88852697053!2d139.8059981!3d35.6797467!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6018891bfc592aad%3A0xd222029e041bd31b!2z44CSMTM1LTAwMjIg5p2x5Lqs6YO95rGf5p2x5Yy65LiJ5aW977yU5LiB55uu77yR4oiS77yRIOadseS6rOmDveePvuS7o-e-juihk-mkqA!5e0!3m2!1sja!2sjp!4v1621326065459!5m2!1sja!2sjp" width="800" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        </div> -->
+        <div id="map"></div>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBdLLQnUYop0ZLgUJSmDMovVKwa9iR2YqEcallback=initMap"></script>
     </div>
   </body>
 </html>
+
+<script>
+function initMap() {
+    // The location of main place
+    const main = { lat: -25.344, lng: 131.031 }; //緯度と経度
+    // The map, centered at main place
+    const map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 16,  //縮尺
+        center: main,
+    });
+
+    // The marker, positioned at Uluru
+    const marker = new google.maps.Marker({
+        position: main,
+        map: map,
+    });
+}
+window.initMap = initMap;
+</script>

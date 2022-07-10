@@ -8,6 +8,56 @@ section {
     display: flex;
 }
 
+.next_button {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.back_button {
+    display: flex;
+}
+
+
+.googlemap{
+    position: relative;
+    width: 100%;
+    padding-top: 70%;
+    margin-top: 30px;
+    margin-bottom: 100px;
+}
+
+.googlemap iframe{
+    position: absolute;
+    top: 0;
+    left: 0;
+    min-width: 300px;
+    min-height: 400px;
+    max-width: 800px;
+    max-height: 1200px;
+    width: 100%;
+    height: 100%;
+}
+
+#map {
+    height: 400px;
+    width: 700px;
+  }
+
+.text_m {
+    padding-top: 10px;
+    margin-bottom: 5px;
+    font-size: 20px;
+    letter-spacing: 1px;
+}
+
+
+.card {
+    margin-right : 10px;
+}
+
+
 
 /* page1 */
 .container-container {
@@ -26,41 +76,4 @@ section {
     margin-right: 2px;
 }
 
-.next_button {
-    display: flex;
-    justify-content: center;
-    margin-top: 40px;
-}
-
-
-/* page2 */
-.googlemap{
-    position: relative;
-    width: 100%;
-    padding-top: 30%;
-}
-
-.googlemap iframe{
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
-
-.text_m {
-    padding-top: 30px;
-    margin-bottom: 5px;
-    font-size: 20px;
-    letter-spacing: 1px;
-}
-
-.card {
-    margin-right : 10px;
-}
-
-
-.back_button {
-    display: flex;
-}
 

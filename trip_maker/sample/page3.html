@@ -31,35 +31,41 @@
                 <p>メインスポットの選択に戻る</p>
             </div>
         </a>
-        <div class="googlemap">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3240.88852697053!2d139.8059981!3d35.6797467!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6018891bfc592aad%3A0xd222029e041bd31b!2z44CSMTM1LTAwMjIg5p2x5Lqs6YO95rGf5p2x5Yy65LiJ5aW977yU5LiB55uu77yR4oiS77yRIOadseS6rOmDveePvuS7o-e-juihk-mkqA!5e0!3m2!1sja!2sjp!4v1621326065459!5m2!1sja!2sjp" width="800" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-        </div>
         <p class="text_m">
-            こちらが周辺のオススメスポットです。行きたいスポットを全て選択し（最大10件）、ページ下部の完了ボタンを押してください。
+            2. サブスポット選択（最大10件）
         </p>
         <section>
-            <div class="card" style="width: 12rem;">
+            <div id="card" class="card" style="width: 12rem;" onclick="card()">
                 <img src="https://placehold.jp/150x150.png" class="card-img-top" alt="..." width="150" height="150">
                 <div class="card-body">
                   <h5 class="card-title">Spot Name</h5>
-                  <a href="#" class="btn btn-primary">GoogleMap</a>
+                  <a href="#" class="btn btn-primary">詳細</a>
                 </div>
             </div>
-            <div class="card" style="width: 12rem;">
+            <div id="card" class="card" style="width: 12rem;" onclick="card()">
                 <img src="https://placehold.jp/150x150.png" class="card-img-top" alt="..." width="150" height="150">
                 <div class="card-body">
                   <h5 class="card-title">Spot Name</h5>
-                  <a href="#" class="btn btn-primary">GoogleMap</a>
+                  <a href="#" class="btn btn-primary">詳細</a>
                 </div>
             </div>
         </section>
         <div class="next_button">
             <div class="d-grid gap-2 col-3 mx-auto">
                 <button type="button" class="btn btn-primary" onclick="location.href='./page4.html'">
-                    完了
+                    決定
                 </button>
             </div>
+        </div>
+        <div class="googlemap">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3240.88852697053!2d139.8059981!3d35.6797467!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6018891bfc592aad%3A0xd222029e041bd31b!2z44CSMTM1LTAwMjIg5p2x5Lqs6YO95rGf5p2x5Yy65LiJ5aW977yU5LiB55uu77yR4oiS77yRIOadseS6rOmDveePvuS7o-e-juihk-mkqA!5e0!3m2!1sja!2sjp!4v1621326065459!5m2!1sja!2sjp" width="800" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
         </div>
     </div>
   </body>
 </html>
+
+<script>
+    function card(){
+        document.getElementById("card").style.boxShadow = "0 0 8px 0 rgba(60, 194, 235, 0.5)";
+    }
+    </script>
