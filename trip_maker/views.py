@@ -1,6 +1,6 @@
 from django.shortcuts import render
 import requests
-import json
+import json, os
 import pprint
 import time
 import datetime
@@ -10,11 +10,15 @@ import datetime
 
 def index(request):
     # TODO 47都道府県をリストを追加
+    PROVNAME = [
+        '北海道', '青森県', '岩手県', '宮城県', '秋田県', '山形県', '福島県', '茨城県', '栃木県', '群馬県',
+        '埼玉県', '千葉県', '東京都', '神奈川県', '新潟県', '富山県', '石川県', '福井県', '山梨県', '長野県',
+        '岐阜県', '静岡県', '愛知県', '三重県', '滋賀県', '京都府', '大阪府', '兵庫県', '奈良県', '和歌山県',
+        '鳥取県', '島根県', '岡山県', '広島県', '山口県', '徳島県', '香川県', '愛媛県', '高知県', '福岡県',
+        '佐賀県', '長崎県', '熊本県', '大分県', '宮崎県', '鹿児島県', '沖縄県'
+    ]
     prefectures_json = {'prefectures': []}
-    with open('static/trip_maker/text/prefectures.txt') as file:
-        if (not file):
-            print('ファイルが読み込めませんでした')
-        prefectures_json['prefectures'].append(file.readline)
+    prefectures_json['prefectures'] = PROVNAME
     return render(request, 'trip_maker/index.html', prefectures_json)
 
 
@@ -67,9 +71,9 @@ def main(request, room_name):
     spots_json = {'room_name': room_name, 'spots': []}
     # TODO　都道府県名から人気がある(口コミが多い)のスポットの
     # 上位10件を抽出。つまり、入力が都道府県名で戻り値がspots(辞書リスト)
-
+    place_name = request.GET.get('prefecture')
     # spotsリストの要素: {'name': 場所名, 'lat': 緯度, 'long': 経度,
     # 'num_of_reviews': 口コミ数, 'review_rating': 評価}
     # ここでspots_json['spots']にspotの辞書リストの追加をお願いします
-    spots_json['spots'] = google_func()  # <-google_func(place_name)
+    spots_json['spots'] = google_func(place_name)  # <-google_func(place_name)
     return render(request, 'trip_maker/main.html', spots_json)
