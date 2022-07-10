@@ -49,7 +49,7 @@ class tripConsumer(WebsocketConsumer):
     def spots_by_review_rating(self, event):
         spots_json = {'type': event['type'], 'spots': []}
         # TODO 与えられた緯度、経度から滞在人口が少ない and レビュー評価が高い
-        # spotを上位20件を抽出。つまり、入力が緯度、経度で戻り値がspots(辞書リスト)
+        # spotを上位15件を抽出。つまり、入力が緯度、経度で戻り値がspots(辞書リスト)
         
         # spotsリストの要素: {'name': 場所名, 'lat': 緯度, 'long': 経度, 
         # 'resident_population': 滞在人口, 'mobile_population': 移動人口, 

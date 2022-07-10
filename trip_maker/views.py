@@ -1,14 +1,15 @@
 from django.shortcuts import render
+from django.conf import settings
+import json, os
 
 # Create your views here.
 
 
 def index(request):
+    # TODO 47都道府県をリストを追加
     prefectures_json = {'prefectures': []}
-    with open('static/trip_maker/text/prefectures.txt') as file:
-        if(not file):
-            print('ファイルが読み込めませんでした')
-        prefectures_json['prefectures'].append(file.readline)
+    prefectures_json['prefectures'].append('hoge')
+    prefectures_json['prefectures'].append('piyo')
     return render(request, 'trip_maker/index.html', prefectures_json)
 
 def main(request, room_name):
