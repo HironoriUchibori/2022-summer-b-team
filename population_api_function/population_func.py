@@ -6,13 +6,13 @@ import datetime
 
 
 def main():
-    google_func2(36.1091117, 140.101429)
-    # google_func("千葉県")
+    google_func2(35.692429, 139.699572)
+    # google_func("東京都")
 
 
 def google_func(place_name):
     params = {
-        "query": place_name + " 観光",
+        "query": place_name + " 旅行",
         "key": "AIzaSyA5SmbNJlpGTV_v6aAtKS-caYI8OpNFQGg",
         "region": "jp",
         "language": "ja",
@@ -22,27 +22,21 @@ def google_func(place_name):
 
     res = requests.get(google_api_url, params=params)
     place = json.loads(res.text)
-    # print(place['results'][0]["geometry"]["location"])
-    # print(place['results'][0]["user_ratings_total"])
-    # print(len(place['results']))
-    # places = place['results']
-
-    # for place in place["results"]:
-    #   print(place["user_ratings_total"])
-    #   print(place["name"])
-    #   print(place["geometry"]["location"])
 
     # 受け取った都道府県から評価数が多い10個の場所を探す
     rating_total = []
     array = []
-    location = []
-    top_ten_location = []
+    location_lat = []
+    location_lng = []
     name = []
-    top_ten_name = []
+    rating = []
+    return_val = []
 
     for place in place["results"]:
-        location.append(place["geometry"]["location"])
+        location_lat.append(place["geometry"]["location"]["lat"])
+        location_lng.append(place["geometry"]["location"]["lng"])
         rating_total.append(place["user_ratings_total"])
+        rating.append(place["rating"])
         name.append(place["name"])
         array.append(place["user_ratings_total"])
 
@@ -50,8 +44,15 @@ def google_func(place_name):
     for i in range(10):
         num = array[i]
         rating_index = rating_total.index(num)
-        top_ten_location.append(location[rating_index])
-        top_ten_name.append(name[rating_index])
+        place_info = dict.fromkeys(
+            ['name', 'lat', 'long', 'num_of_reviews', 'review_rating'])
+        place_info['name'] = name[rating_index]
+        place_info['lat'] = location_lat[rating_index]
+        place_info['long'] = location_lng[rating_index]
+        place_info['num_of_reviews'] = rating_total[rating_index]
+        place_info['review_rating'] = rating[rating_index]
+        return_val.append(place_info)
+    print(return_val)
 
 
 def google_func2(lat, lon):
@@ -72,14 +73,16 @@ def google_func2(lat, lon):
             rating.append(place["rating"])
             name.append(place["name"])
     for i in range(2):
-        time.sleep(1)
+        # time.sleep(2)
         if places.get("next_page_token") != None:
+            # print(f'p = {places["next_page_token"]}')
             url1 = url + '&pagetoken=' + places["next_page_token"]
             response = requests.request("GET",
                                         url1,
                                         headers=headers,
                                         data=payload)
             places = json.loads(response.text)
+            # print(f'places = {places}')
             for place in places["results"]:
                 if place.get("rating") != None:
                     location.append(place["geometry"]["location"])
@@ -91,6 +94,8 @@ def google_func2(lat, lon):
     # print(location)
     # print(rating)
     # print(name)
+    # print(len(name))
+    #print(str(len(rating))+'\n')
     population_func(location, rating, name)
 
 
@@ -153,25 +158,23 @@ def population_func(locations, rating, name):
         pop_score = (population_score[i]) / (population_max)
         score = pop_score + rating_score
         total_score.append(score)
-    # print(f'total_score = {total_score}')
 
     # スコアの上位15個くらいの場所名を求める
     array = total_score
-    top_n_location_lat = []
-    top_n_location_lon = []
-    top_n_name = []
-
+    return_val = []
     array = sorted(array, reverse=True)
     for i in range(15):  #上位何個取得するか
         num = array[i]
         total_score_index = total_score.index(num)
-        top_n_location_lat.append(locations[total_score_index]['lat'])
-        top_n_location_lon.append(locations[total_score_index]['lng'])
-        top_n_name.append(name[total_score_index])
-    print(top_n_name)
-
-    # 人数の少ないところをピックアップ
-    # Google place api からもらった評価の情報と合わせてフィルタリング
+        place_info = dict.fromkeys(
+            ['name', 'lat', 'long', 'population', 'review_rating'])
+        place_info['name'] = name[total_score_index]
+        place_info['lat'] = locations[total_score_index]['lat']
+        place_info['long'] = locations[total_score_index]['lng']
+        place_info['population'] = average_population[total_score_index]
+        place_info['review_rating'] = rating[total_score_index]
+        return_val.append(place_info)
+    print(return_val)
 
     # フィルタリングして合致したメッシュコードから緯度経度取得
     # 緯度経度情報から場所特定
