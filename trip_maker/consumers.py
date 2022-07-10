@@ -109,16 +109,12 @@ class tripConsumer(WebsocketConsumer):
             }
             res = requests.post(url, headers=Headers, json=place)
             data = json.loads(res.text)
-            # print(data)
-            # pprint.pprint(
-            #     data['body']['results'][0]['populationList'][0]["population"])
             for population_lists in data['body']['results']:
                 population_array = []
                 for population_list in population_lists["populationList"]:
                     pop_num = population_list["population"]
                     population_array.append(pop_num)
                 pop_mean = sum(population_array) / len(population_array)
-                # print(pop_mean)
                 average_population.append(pop_mean)
         average = sum(average_population) / len(average_population)
         population_score = []
@@ -157,8 +153,10 @@ class tripConsumer(WebsocketConsumer):
         spots_json = {'type': event['type'], 'spots': []}
         # TODO 与えられた緯度、経度から滞在人口が少ない and レビュー評価が高い
         # spotを上位15件を抽出。つまり、入力が緯度、経度で戻り値がspots(辞書リスト)
-        spots_json['spots'] = google_func2(
-            event)  #<-google_func2(self,lat,lon)
+        location = event['message']
+        lat = location['lat']
+        lng = location['long']
+        spots_json['spots'] = google_func2(lat, lng)
         # spotsリストの要素: {'name': 場所名, 'lat': 緯度, 'long': 経度,
         # 'population': 平均人口,
         # 'review_rating': 評価}
