@@ -21,4 +21,5 @@ def main(request, room_name):
     # 'resident_population': 滞在人口, 'mobile_population': 移動人口, 
     # 'num_of_reviews': 口コミ数, 'review_rating': 評価}
     # ここでspots_json['spots']にspotの辞書リストの追加をお願いします
+    
     return render(request, 'trip_maker/main.html', spots_json)

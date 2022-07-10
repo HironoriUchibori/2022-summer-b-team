@@ -47,9 +47,17 @@
         <script>
             const prefectures = JSON.parse(document.getElementById('prefectures').textContent);
             let prefecture_buttons = document.getElementById("button_choose_prefecture")
+            let id = 0;
             for(prefecture of prefectures){
+                let buttton = document.createElement('a');
+                buttton.id = id;
+                id++;
+                buttton.className="btn btn-primary";
+                buttton.href="{% url 'main' %}?param="+String(id);
+                buttton.innerHTML=prefecture;
                 console.log(prefecture);
-                
+                prefecture_buttons.appendChild(buttton);
+
             }
 
 
