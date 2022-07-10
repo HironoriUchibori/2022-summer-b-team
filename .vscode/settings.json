@@ -1,0 +1,4 @@
+{
+  "python.pythonPath": "/Users/ryota/2022-summer-b-team/.venv/bin/python3.9",
+  "python.formatting.provider": "yapf"
+}
